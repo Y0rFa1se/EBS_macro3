@@ -1,5 +1,6 @@
 import sys
 import time
+import datetime
 import webbrowser
 import math
 
@@ -15,6 +16,9 @@ log = open("properties/logs.ini", "a")
 
 with open("properties/options.ini", "r") as opt:
     isYoutubeTrue, isUseLogTrue = map(int, opt.readline().split())
+
+class taskkill(Exception):
+    pass
 
 class Window(QMainWindow, gui):
     def __init__(self):
@@ -78,6 +82,7 @@ class Window(QMainWindow, gui):
                 opt.write(str(isYoutubeTrue) + " " + str(isUseLogTrue))
             QCloseEvent.accept()
             log.close()
+            raise taskkill()
         else:
             QCloseEvent.ignore()
 
@@ -216,7 +221,8 @@ class Window(QMainWindow, gui):
         self.logs.append("show learntime")
 
         self.txt.setPlainText("total learntime : " + str(sum) + "minutes")
-        self.txt.append("started at : " + str(time.ctime()))
+        self.txt.append("started at : " + str(datetime.datetime.now()))
+        self.txt.append("ends at : " + str(datetime.datetime.now() + datetime.timedelta(minutes = sum)))
         self.txt.append("total lectures : " + str(len(links)))
 
         for i in range(len(links)):
