@@ -55,6 +55,17 @@ class Window(QMainWindow, gui):
         self.Check.clicked.connect(self.check)
         self.LogIn.clicked.connect(self.login)
         self.Example.clicked.connect(self.example)
+        self.Showlog.clicked.connect(self.showlog)
+        self.Clearlog.clicked.connect(self.clearlog)
+
+    def showlog(self):
+        with open("properties/logs.ini", "r") as lo:
+            self.txt.setPlainText(lo.read())
+
+    def clearlog(self):
+        with open("properties/logs.ini", "w") as lo:
+            lo.write("")
+        QMessageBox.information(self, "로그", "로그 삭제됨")
 
     def closeEvent(self, QCloseEvent):
         if self.Uselog.isChecked():
@@ -274,12 +285,16 @@ class Window(QMainWindow, gui):
                 self.logs.append("play")
                 pyautogui.click(pyautogui.center(ploc))
 
+            self.txt.append("\ncurrent lecture : " + str(lrts[i]))
+
             for k in range(math.ceil(lrts[i])):
                 tick(1)
                 now += 1
                 self.time = int(((now / 60) / sum) * 100)
                 self.pbar.setValue(self.time)
+                self.logs.append("elapsed time : "  + str(now) + "   current lecture : " + str(lrts[i]) + "   total learntime : " + str(sum * 60))
             pyautogui.hotkey("ctrl", "w")
+            self.txt.append("finished 1 lecture")
             if self.Uselog.isChecked():
                 log.write("end /// " + str(time.ctime()) + "\n")
             print("end")
